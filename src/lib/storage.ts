@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const saveToStorage = (data: any) => {
   localStorage.setItem("competition_config", JSON.stringify(data));
 };

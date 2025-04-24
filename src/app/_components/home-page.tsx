@@ -27,6 +27,7 @@ const formatTime = (seconds: number) => {
 };
 
 export default function HomePage() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [config, setConfig] = useState<any>(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [curRound, setCurRound] = useState(1);
@@ -93,7 +94,7 @@ export default function HomePage() {
         </div>
       );
     }
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return config.participants?.map((p: any, index: number) => {
       const status = getStatusForIndex(index, config.currentRound);
       const backgroundColor = config.backgrounds?.[status] || "#e5e7eb";

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function ConfigPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
   const [round, setRound] = useState(1);
   const [maxRound, setMaxRound] = useState(3);
@@ -55,6 +56,7 @@ export default function ConfigPage() {
     }
   }, [status]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleStart = () => {
     const config = {
       participants,
@@ -73,6 +75,7 @@ export default function ConfigPage() {
     // router.push("/");
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handlePause = () => {
     const config = {
       participants,
@@ -90,6 +93,7 @@ export default function ConfigPage() {
     alert("Lomba di-pause!");
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleStop = () => {
     const config = {
       participants,
