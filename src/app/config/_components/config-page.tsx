@@ -1,12 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+//import { useRouter } from "next/navigation";
 import { saveToStorage, getFromStorage } from "@/lib/storage";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function ConfigPage() {
-  const router = useRouter();
+  // const router = useRouter();
   const [round, setRound] = useState(1);
   const [maxRound, setMaxRound] = useState(3);
   const [countdown, setCountdown] = useState(3600);
@@ -134,7 +134,7 @@ export default function ConfigPage() {
       <div>
         <label className="block font-medium mb-1">Daftar Peserta</label>
         <div className="space-y-2">
-          {participants.map((p, i) => (
+          {participants?.map((p, i) => (
             <div key={p.id} className="flex items-center gap-2">
               <input
                 type="text"
