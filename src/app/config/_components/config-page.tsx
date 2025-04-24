@@ -164,7 +164,7 @@ export default function ConfigPage() {
       <div>
         <label className="block font-medium mb-1">Daftar Peserta</label>
         <div className="space-y-2">
-          {participants.map((p, i) => (
+          {participants?.map((p, i) => (
             <input
               key={p.id}
               type="text"
