@@ -104,7 +104,7 @@ export default function HomePage() {
       return (
         <div
           key={p.id}
-          className="p-4 rounded-xl shadow-md"
+          className="p-4 rounded-[5px] shadow-md"
           style={{ backgroundColor, color }}
         >
           <p className="font-semibold text-base">{p.name}</p>
@@ -131,22 +131,19 @@ export default function HomePage() {
   return (
     <main className="p-4 w-full">
       <div className="flex flex-col lg:flex-row gap-6">
-        <section className="grid grid-cols-3 gap-4 flex-1">
+        <section className="grid grid-cols-3 gap-4 flex-1 rounded">
           {renderParticipant()}
         </section>
 
         <aside className="w-full lg:w-64 bg-white rounded-xl shadow-md p-4 h-fit">
           <h1 className="text-xl font-bold mb-2 text-black">
-            🎯 Round {curRound}
+             Round {curRound}
           </h1>
           <h2 className="text-lg font-medium text-gray-700 mb-2">
-            ⏳ Countdown:
+             Countdown:
           </h2>
-          <p className="text-2xl font-mono text-blue-600">
+          <p className="text-2xl font-mono text-black">
             {formatTime(timeLeft)}
-          </p>
-          <p className="mt-2 text-sm text-gray-500 capitalize">
-            Status: <strong>{config?.status}</strong>
           </p>
         </aside>
       </div>
