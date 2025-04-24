@@ -85,6 +85,7 @@ export default function HomePage() {
 
     return () => clearInterval(interval);
   }, [config]);
+  console.log(config);
 
   const renderParticipant = () => {
     if (!config) {
