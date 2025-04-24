@@ -1,28 +1,25 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+//import { useRouter } from "next/navigation";
 import { saveToStorage, getFromStorage } from "@/lib/storage";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function ConfigPage() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const router = useRouter();
+  // const router = useRouter();
   const [round, setRound] = useState(1);
   const [maxRound, setMaxRound] = useState(3);
   const [countdown, setCountdown] = useState(3600);
-  const [participants, setParticipants] = useState(
-    Array.from({ length: 12 }, (_, i) => ({
-      id: i + 1,
-      name: `Peserta ${i + 1}`,
-    }))
-  );
+  const [participants, setParticipants] = useState<
+    { id: number; name: string }[]
+  >([]);
+  const [totalParticipant, setTotalParticipant] = useState(12);
 
   const [backgrounds, setBackgrounds] = useState({
-    prepare: "#facc15", // yellow-400
-    active: "#22c55e", // green-500
-    rest: "#ef4444", // red-500
-    done: "#6b7280", // gray-500
+    prepare: "#facc15",
+    active: "#22c55e",
+    rest: "#ef4444",
+    done: "#6b7280",
   });
 
   const [textColors, setTextColors] = useState({
@@ -42,7 +39,10 @@ export default function ConfigPage() {
       setRound(saved.currentRound);
       setMaxRound(saved.maxRound ?? 3);
       setCountdown(saved.totalCountdown);
-      setParticipants(saved.participants);
+      if (saved.participants) {
+        setParticipants(saved.participants);
+        setTotalParticipant(saved.participants.length);
+      }
       if (saved.backgrounds) setBackgrounds(saved.backgrounds);
       if (saved.textColors) setTextColors(saved.textColors);
       if (saved.status) setStatus(saved.status);
@@ -51,66 +51,23 @@ export default function ConfigPage() {
 
   useEffect(() => {
     if (status !== "paused") {
-      // Save status in local storage when it's not paused
       saveToStorage({ status });
     }
   }, [status]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleStart = () => {
-    const config = {
-      participants,
-      totalCountdown: countdown,
-      currentRound: round,
-      currentCountdownStartTime: Date.now(),
-      maxRound,
-      backgrounds,
-      textColors,
-      status: "running",
-    };
-    setStatus("running");
-
-    saveToStorage(config);
-    alert("Lomba dimulai!");
-    // router.push("/");
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handlePause = () => {
-    const config = {
-      participants,
-      totalCountdown: countdown,
-      currentRound: round,
-      currentCountdownStartTime: Date.now(),
-      maxRound,
-      backgrounds,
-      textColors,
-      status: "paused",
-    };
-    setStatus("paused");
-
-    saveToStorage(config);
-    alert("Lomba di-pause!");
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleStop = () => {
-    const config = {
-      participants,
-      totalCountdown: countdown,
-      currentRound: round,
-      currentCountdownStartTime: Date.now(),
-      maxRound,
-      backgrounds,
-      textColors,
-      status: "stopped",
-    };
-    setStatus("stopped");
-
-    saveToStorage(config);
-    alert("Lomba di-stop!");
-    //  router.push("/");
-  };
+  // Sync jumlah peserta berdasarkan input totalParticipant
+  useEffect(() => {
+    if (totalParticipant > participants.length) {
+      const diff = totalParticipant - participants.length;
+      const newParticipants = Array.from({ length: diff }, (_, i) => ({
+        id: Date.now() + i,
+        name: `Peserta ${participants.length + i + 1}`,
+      }));
+      setParticipants((prev) => [...prev, ...newParticipants]);
+    } else if (totalParticipant < participants.length) {
+      setParticipants((prev) => prev.slice(0, totalParticipant));
+    }
+  }, [totalParticipant]);
 
   const handleSaveConfig = () => {
     const config = {
@@ -135,8 +92,8 @@ export default function ConfigPage() {
         <label className="block font-medium">Round Awal</label>
         <input
           type="number"
-          value={round}
-          onChange={(e) => setRound(parseInt(e.target.value))}
+          value={round || 0}
+          onChange={(e) => setRound(parseInt(e.target.value || "0"))}
           className="border px-2 py-1 rounded w-full"
         />
       </div>
@@ -145,8 +102,8 @@ export default function ConfigPage() {
         <label className="block font-medium">Max Round</label>
         <input
           type="number"
-          value={maxRound}
-          onChange={(e) => setMaxRound(parseInt(e.target.value))}
+          value={maxRound || 0}
+          onChange={(e) => setMaxRound(parseInt(e.target.value || "0"))}
           className="border px-2 py-1 rounded w-full"
         />
       </div>
@@ -155,8 +112,21 @@ export default function ConfigPage() {
         <label className="block font-medium">Durasi Countdown (detik)</label>
         <input
           type="number"
-          value={countdown}
+          value={countdown || 0}
           onChange={(e) => setCountdown(parseInt(e.target.value))}
+          className="border px-2 py-1 rounded w-full"
+        />
+      </div>
+
+      <div>
+        <label className="block font-medium">Total Peserta</label>
+        <input
+          type="number"
+          min={1}
+          value={totalParticipant}
+          onChange={(e) =>
+            setTotalParticipant(Math.max(1, parseInt(e.target.value || "0")))
+          }
           className="border px-2 py-1 rounded w-full"
         />
       </div>
@@ -165,17 +135,30 @@ export default function ConfigPage() {
         <label className="block font-medium mb-1">Daftar Peserta</label>
         <div className="space-y-2">
           {participants?.map((p, i) => (
-            <input
-              key={p.id}
-              type="text"
-              value={p.name}
-              onChange={(e) => {
-                const updated = [...participants];
-                updated[i].name = e.target.value;
-                setParticipants(updated);
-              }}
-              className="border px-2 py-1 rounded w-full"
-            />
+            <div key={p.id} className="flex items-center gap-2">
+              <input
+                type="text"
+                value={p.name}
+                onChange={(e) => {
+                  const updated = [...participants];
+                  updated[i].name = e.target.value || "";
+                  setParticipants(updated);
+                }}
+                className="border px-2 py-1 rounded w-full"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const filtered = participants.filter((_, idx) => idx !== i);
+                  setParticipants(filtered);
+                  setTotalParticipant(filtered.length);
+                }}
+                className="text-red-500 font-bold text-lg"
+                title="Hapus Peserta"
+              >
+                ×
+              </button>
+            </div>
           ))}
         </div>
       </div>
@@ -222,24 +205,6 @@ export default function ConfigPage() {
       </div>
 
       <div className="flex gap-4">
-        {/* <button
-          onClick={handleStart}
-          className="bg-blue-500 text-white px-4 py-2 rounded-xl"
-        >
-          Mulai Lomba
-        </button> */}
-        {/* <button
-          onClick={handlePause}
-          className="bg-yellow-500 text-white px-4 py-2 rounded-xl"
-        >
-          Pause Lomba
-        </button>
-        <button
-          onClick={handleStop}
-          className="bg-red-500 text-white px-4 py-2 rounded-xl"
-        >
-          Berhenti Lomba
-        </button> */}
         <button
           onClick={handleSaveConfig}
           className="bg-green-500 text-white px-4 py-2 rounded-xl"
@@ -247,9 +212,7 @@ export default function ConfigPage() {
           Simpan Data
         </button>
         <div className="bg-blue-500 text-white px-4 py-2 rounded-xl">
-          <Link href={"/"} className="">
-            Check halaman Timer
-          </Link>
+          <Link href={"/"}>Check halaman Timer</Link>
         </div>
       </div>
     </div>
