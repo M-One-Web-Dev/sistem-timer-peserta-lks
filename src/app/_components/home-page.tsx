@@ -134,7 +134,9 @@ export default function HomePage() {
         </section>
 
         <aside className="w-full lg:w-64 bg-white rounded-xl shadow-md p-4 h-fit">
-          <h1 className="text-xl font-bold mb-2">🎯 Round {curRound}</h1>
+          <h1 className="text-xl font-bold mb-2 text-black">
+            🎯 Round {curRound}
+          </h1>
           <h2 className="text-lg font-medium text-gray-700 mb-2">
             ⏳ Countdown:
           </h2>
