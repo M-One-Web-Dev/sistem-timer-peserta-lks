@@ -85,7 +85,6 @@ export default function HomePage() {
 
     return () => clearInterval(interval);
   }, [config]);
-  console.log(config);
 
   const renderParticipant = () => {
     if (!config) {
@@ -95,9 +94,30 @@ export default function HomePage() {
         </div>
       );
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return config.participants?.map((p: any, index: number) => {
-      const status = getStatusForIndex(index, config.currentRound);
+
+    // Create a copy of participants array to sort
+    const sortedParticipants = [...config.participants].map((p, index) => ({
+      ...p,
+      status: getStatusForIndex(index, config.currentRound),
+      originalIndex: index // Keep track of original index for status calculation
+    }));
+
+    // Sort participants by status priority
+    sortedParticipants.sort((a, b) => {
+      // Define status priority (lower number = higher priority)
+      const statusPriority = {
+        active: 1,
+        prepare: 2,
+        done: 4,
+        rest: 3
+      };
+
+      return statusPriority[a.status] - statusPriority[b.status];
+    });
+
+    // Render sorted participants
+    return sortedParticipants.map((p) => {
+      const status = p.status; // Use the status we already calculated
       const backgroundColor = config.backgrounds?.[status] || "#e5e7eb";
       const color = config.textColors?.[status] || "#000000";
 
