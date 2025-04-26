@@ -118,13 +118,26 @@ export default function HomePage() {
 
   if (config === null)
     return (
-      <div className="h-screen flex items-center justify-center">
-        <Link
-          href={"/config"}
-          className="text-white py-[5px] px-[10px] rounded-lg bg-blue-500"
+      <div className="relative h-screen">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: "url('images/sekolahmoehi.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
         >
-          Click untuk setup Dulu
-        </Link>
+          <div className="absolute inset-0 bg-black/50"></div>
+        </div>
+
+        <div className="relative z-10 h-full flex items-center justify-center">
+          <Link
+            href={"/config"}
+            className="text-white py-[5px] px-[10px] rounded-lg bg-blue-500"
+          >
+            Click untuk setup Dulu
+          </Link>
+        </div>
       </div>
     );
 
