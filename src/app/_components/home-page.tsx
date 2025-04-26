@@ -152,12 +152,13 @@ export default function HomePage() {
             </span>
           </p>
 
-          <button
+          <Link
+            href="/"
             className="border border-yellow-400 text-yellow-400 px-6 py-2 rounded hover:bg-yellow-400 hover:text-black transition font-bold shadow-[0_0_10px_rgba(250,204,21,0.5)] hover:shadow-[0_0_15px_rgba(250,204,21,0.8)]"
             style={{ fontFamily: "'Special Gothic Expanded One', sans-serif" }}
           >
             Click Here
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -182,6 +183,10 @@ export default function HomePage() {
           <p className="mt-2 text-sm text-gray-500 capitalize">
             Status: <strong>{config?.status}</strong>
           </p>
+          <br></br>
+          <Link href="/config" className="bg-blue-600 px-4 py-2 rounded-2xl">
+            Back to Config
+          </Link>
         </aside>
       </div>
     </main>
