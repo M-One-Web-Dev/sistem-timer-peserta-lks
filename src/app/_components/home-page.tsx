@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getFromStorage, saveToStorage } from "@/lib/storage";
 import Link from "next/link";
+import Head from "next/head";
 
 const getStatusForIndex = (index: number, currentRound: number) => {
   const start = (currentRound - 1) * 3;
@@ -118,25 +119,45 @@ export default function HomePage() {
 
   if (config === null)
     return (
-      <div className="relative h-screen">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: "url('images/sekolahmoehi.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="absolute inset-0 bg-black/50"></div>
+      <div className="relative min-h-screen bg-black overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src="/images/sekolahmoehi.jpg"
+            alt="Background Sekolah"
+            className="w-full h-full object-cover brightness-50"
+          />
         </div>
+        <Head>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&display=swap"
+            rel="stylesheet"
+          />
+        </Head>
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center p-4">
+          <h2 className="text-cyan-400 text-3xl md:text-6xl font-bold [text-shadow:_0_0_10px_rgba(34,211,238,0.8)] mb-4">
+            Sistem Timer Peserta LKS
+          </h2>
+          <h3 className="text-cyan-400 text-2xl md:text-4xl font-bold [text-shadow:_0_0_8px_rgba(34,211,238,0.7)] mb-8">
+            Jawa Tengah
+          </h3>
+          <p className="text-yellow-400 text-sm md:text-lg mb-8 [text-shadow:_0_0_5px_rgba(250,204,21,0.6)]">
+            Design By{" "}
+            <span
+              className="text-cyan-400 [text-shadow:_0_0_5px_rgba(34,211,238,0.6)]"
+              style={{
+                fontFamily: "'Special Gothic Expanded One', sans-serif",
+              }}
+            >
+              Mutuharjo Web Dev
+            </span>
+          </p>
 
-        <div className="relative z-10 h-full flex items-center justify-center">
-          <Link
-            href={"/config"}
-            className="text-white py-[5px] px-[10px] rounded-lg bg-blue-500"
+          <button
+            className="border border-yellow-400 text-yellow-400 px-6 py-2 rounded hover:bg-yellow-400 hover:text-black transition font-bold shadow-[0_0_10px_rgba(250,204,21,0.5)] hover:shadow-[0_0_15px_rgba(250,204,21,0.8)]"
+            style={{ fontFamily: "'Special Gothic Expanded One', sans-serif" }}
           >
-            Click untuk setup Dulu
-          </Link>
+            Click Here
+          </button>
         </div>
       </div>
     );
