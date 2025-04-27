@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import { getFromStorage, saveToStorage } from "@/lib/storage";
 import Link from "next/link";
 
-const getStatusForIndex = (index: number, currentRound: number) => {
+const getStatusForIndex = (index: number, currentRound: number, isRoundComplete: boolean) => {
   const start = (currentRound - 1) * 3;
   const end = start + 3;
   const prepareEnd = end + 3;
+
+  // If the round is complete, all active participants should be marked as done
+  if (isRoundComplete && index >= start && index < end) return "done";
 
   if (index >= start && index < end) return "active";
   if (index >= end && index < prepareEnd) return "prepare";
@@ -95,10 +98,13 @@ export default function HomePage() {
       );
     }
 
+    // Check if the round is complete (timer at 0 or status is done)
+    const isRoundComplete = timeLeft === 0 || config.status === "done";
+
     // Create a copy of participants array to sort
     const sortedParticipants = [...config.participants].map((p, index) => ({
       ...p,
-      status: getStatusForIndex(index, config.currentRound),
+      status: getStatusForIndex(index, config.currentRound, isRoundComplete),
       originalIndex: index // Keep track of original index for status calculation
     }));
 
