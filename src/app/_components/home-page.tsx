@@ -5,10 +5,13 @@ import { getFromStorage, saveToStorage } from "@/lib/storage";
 import Link from "next/link";
 import Head from "next/head";
 
-const getStatusForIndex = (index: number, currentRound: number) => {
+const getStatusForIndex = (index: number, currentRound: number, isRoundComplete: boolean) => {
   const start = (currentRound - 1) * 3;
   const end = start + 3;
   const prepareEnd = end + 3;
+
+  // If the round is complete, all active participants should be marked as done
+  if (isRoundComplete && index >= start && index < end) return "done";
 
   if (index >= start && index < end) return "active";
   if (index >= end && index < prepareEnd) return "prepare";
@@ -86,7 +89,6 @@ export default function HomePage() {
 
     return () => clearInterval(interval);
   }, [config]);
-  console.log(config);
 
   const renderParticipant = () => {
     if (!config) {
@@ -96,9 +98,33 @@ export default function HomePage() {
         </div>
       );
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return config.participants?.map((p: any, index: number) => {
-      const status = getStatusForIndex(index, config.currentRound);
+
+    // Check if the round is complete (timer at 0 or status is done)
+    const isRoundComplete = timeLeft === 0 || config.status === "done";
+
+    // Create a copy of participants array to sort
+    const sortedParticipants = [...config.participants].map((p, index) => ({
+      ...p,
+      status: getStatusForIndex(index, config.currentRound, isRoundComplete),
+      originalIndex: index // Keep track of original index for status calculation
+    }));
+
+    // Sort participants by status priority
+    sortedParticipants.sort((a, b) => {
+      // Define status priority (lower number = higher priority)
+      const statusPriority = {
+        active: 1,
+        prepare: 2,
+        done: 4,
+        rest: 3
+      };
+
+      return statusPriority[a.status] - statusPriority[b.status];
+    });
+
+    // Render sorted participants
+    return sortedParticipants.map((p) => {
+      const status = p.status; // Use the status we already calculated
       const backgroundColor = config.backgrounds?.[status] || "#e5e7eb";
       const color = config.textColors?.[status] || "#000000";
 
